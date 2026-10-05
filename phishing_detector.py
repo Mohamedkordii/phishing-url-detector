@@ -39,7 +39,10 @@ def analyze_url(url):
         score += 1
         reasons.append("URL does not use HTTPS")
 
-    if has_ip_address(domain.split(":")[0]):
+    host = domain.split(":")[0]
+    is_ip = has_ip_address(host)
+
+    if is_ip:
         score += 2
         reasons.append("URL uses an IP address instead of a domain name")
 
@@ -51,11 +54,12 @@ def analyze_url(url):
         score += 2
         reasons.append("URL contains the @ symbol")
 
-    if domain.count(".") >= 3:
+    if not is_ip and host.count(".") >= 3:
         score += 1
         reasons.append("Domain contains many subdomains")
 
     keyword_matches = []
+
     for keyword in SUSPICIOUS_KEYWORDS:
         if keyword in full_url:
             keyword_matches.append(keyword)
